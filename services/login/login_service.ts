@@ -7,8 +7,8 @@ class LoginService{
 
     public async Login(data: LoginRequest): Promise<void> {
         var response = await api.post<LoginResponse>('/login', data);
-        AsyncStorage.setItem("token", response.data.token);
-        AsyncStorage.setItem("user_id", response.data.id);
+        await AsyncStorage.setItem("token", response.data.token);
+        await AsyncStorage.setItem("user_id", response.data.id);
     }
 }
 export default new LoginService();
