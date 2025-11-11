@@ -1,7 +1,8 @@
 import { DeliveryResponse } from "@/services/deliveries/dtos/DeliveryResponse";
 import { useState } from "react";
-import { FaTruck } from "react-icons/fa";
-import { FlatList, Text, View } from "react-native";
+import { FaSearch, FaTruck } from "react-icons/fa";
+import { IoIosArrowForward } from "react-icons/io";
+import { FlatList, Pressable, Text, TextInput, View } from "react-native";
 
 export default function DeliveriesPage() {
   const [deliveries] = useState<DeliveryResponse[]>([
@@ -33,19 +34,37 @@ export default function DeliveriesPage() {
       <Text className="text-2xl font-bold text-white text-center">
         Entregas
       </Text>
+      <View className="flex-row  bg-gray-700 rounded-lg h-12 justify-center items-center align-middle px-4">
+        <FaSearch className="text-gray-400" />
+        <TextInput
+          className="outline-none text-white flex-grow p-3 text-base"
+          placeholder="Buscar por nome ou endereço"
+        ></TextInput>
+      </View>
+      <View className="flex flex-row gap-10 text-center justify-center">
+        <Pressable className="bg-gray-700 flex-grow rounded-lg p-1">
+          <Text className="text-center text-white ">Entregue</Text>
+        </Pressable>
+        <Pressable className="bg-gray-700 flex-grow rounded-lg p-1">
+          <Text className="text-center text-white ">Pendente</Text>
+        </Pressable>
+        <Pressable className="bg-gray-700 flex-grow rounded-lg p-1">
+          <Text className="text-center text-white ">Atrasado</Text>
+        </Pressable>
+      </View>
       <FlatList
         className=""
         data={deliveries}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View className="w-full bg-gray-800 p-6 my-2 rounded-lg flex flex-row gap-4 items-center  ">
-            <FaTruck className="bg-gray-500 h-12 w-12 p-2 text-white rounded-lg" />
-            <View className="flex-col gap-1">
+          <Pressable className="w-full bg-gray-800 p-6 my-2 rounded-lg flex flex-row gap-4 items-center  ">
+            <FaTruck className="bg-gray-700 h-12 w-12 p-2 text-white rounded-lg" />
+            <View className="flex-col gap-1 flex-grow">
               <Text className="text-white text-base">{item.name}</Text>
               <Text className="text-gray-400">{item.address}</Text>
               <Text
                 className={
-                  " rounded-3xl px-2 py-0.5 " +
+                  " rounded-3xl px-2 py-0.5 w-fit " +
                   (item.status === "Pendente"
                     ? "text-yellow-300 bg-yellow-800  "
                     : item.status === "Entregue"
@@ -58,7 +77,10 @@ export default function DeliveriesPage() {
                 - {item.status}
               </Text>
             </View>
-          </View>
+            <View className="flex-shrink">
+              <IoIosArrowForward className="text-gray-400" />
+            </View>
+          </Pressable>
         )}
       />
     </View>
