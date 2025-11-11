@@ -1,33 +1,27 @@
+import deliveriesService from "@/services/deliveries/deliveries_service";
 import { DeliveryResponse } from "@/services/deliveries/dtos/DeliveryResponse";
-import { useState } from "react";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { FaSearch, FaTruck } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
 import { FlatList, Pressable, Text, TextInput, View } from "react-native";
 
 export default function DeliveriesPage() {
-  const [deliveries] = useState<DeliveryResponse[]>([
-    {
-      id: "1",
-      name: "Pedido 1",
-      status: "Pendente",
-      address: "Rua A, 123",
-      deliveryDate: "2025-11-10",
-    },
-    {
-      id: "2",
-      name: "Pedido 2",
-      status: "Entregue",
-      address: "Rua B, 456",
-      deliveryDate: "2025-11-09",
-    },
-    {
-      id: "3",
-      name: "Pedido 3",
-      status: "Atrasado",
-      address: "Rua C, 789",
-      deliveryDate: "2025-11-11",
-    },
-  ]);
+  const router = useRouter();
+  const [deliveries, setDeliveries] = useState<DeliveryResponse[]>([]);
+
+  async function getDeliveries() {
+    const data = await deliveriesService.getDeliveries();
+    setDeliveries(data);
+  }
+
+  useEffect(() => {
+    getDeliveries();
+  }, []);
+
+  function getProduct(id:string){
+    router.push(`/deliveries/${id}`);
+  }
 
   return (
     <View className="p-4 flex bg-gray-900 h-full gap-6">
@@ -57,7 +51,7 @@ export default function DeliveriesPage() {
         data={deliveries}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Pressable className="w-full bg-gray-800 p-6 my-2 rounded-lg flex flex-row gap-4 items-center  ">
+          <Pressable onPress={() => getProduct(item.id)} className="w-full bg-gray-800 p-6 my-2 rounded-lg flex flex-row gap-4 items-center">
             <FaTruck className="bg-gray-700 h-12 w-12 p-2 text-white rounded-lg" />
             <View className="flex-col gap-1 flex-grow">
               <Text className="text-white text-base">{item.name}</Text>

@@ -6,6 +6,11 @@ class DeliveriesService {
     var response = await api.get<DeliveryResponse[]>("/deliveries");
     return response.data;
   }
+
+  public async getDeliveryById(id:string): Promise<DeliveryResponse>{
+    var response = await api.get<DeliveryResponse>(`/deliveries/${id}`)
+    return response.data;
+  }
 }
 
 export default new DeliveriesService();
