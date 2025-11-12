@@ -120,8 +120,6 @@ export default function DeliveriesPage() {
         className=""
         data={deliveries}
         keyExtractor={(item) => item.id}
-        onEndReached={() => getDeliveries(20)} // dispara quando chega no final
-        onEndReachedThreshold={0.5}
         renderItem={({ item }) => (
           <Pressable
             onPress={() => getProduct(item.id)}

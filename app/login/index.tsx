@@ -8,7 +8,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
 
   async function handleLogin() {
-    await LoginService.Login({
+    await LoginService.login({
       email,
       password,
     });
