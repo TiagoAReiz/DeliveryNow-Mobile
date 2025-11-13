@@ -1,9 +1,9 @@
 import deliveriesService from "@/services/deliveries/deliveries_service";
 import { DeliveryResponse } from "@/services/deliveries/dtos/DeliveryResponse";
+import { FontAwesome } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { FaArrowLeft, FaCamera } from "react-icons/fa";
 import { Alert, Image, Pressable, ScrollView, Text, View } from "react-native";
 
 export default function DeliveryPage() {
@@ -61,7 +61,7 @@ export default function DeliveryPage() {
           onPress={() => router.push("/deliveries")}
           className="flex-row items-center mb-6"
         >
-          <FaArrowLeft className="text-white mr-2" />
+          <FontAwesome name="arrow-left" size={24} color="gray" />
           <Text className="text-white font-semibold text-lg">Voltar</Text>
         </Pressable>
 
@@ -103,7 +103,7 @@ export default function DeliveryPage() {
           onPress={takePhoto}
           className="bg-blue-600 flex-row items-center justify-center p-5 rounded-2xl mb-6 shadow-xl"
         >
-          <FaCamera className="text-white mr-3" />
+          <FontAwesome name="camera" size={24} color="white" className="mr-3" />
           <Text className="text-white text-base">Tirar Foto do Canhoto</Text>
         </Pressable>
 

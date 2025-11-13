@@ -24,6 +24,7 @@ export default function LoginScreen() {
       <Text className="text-white text-left">E-mail</Text>
       <TextInput
         placeholder="Digite seu email"
+        placeholderTextColor={"gray"}
         value={email}
         onChangeText={setEmail}
         className="p-3 w-full  rounded-lg  bg-gray-800 text-white text-base
@@ -32,6 +33,7 @@ export default function LoginScreen() {
       <Text className="text-white text-left">Senha</Text>
       <TextInput
         placeholder="Digite sua senha"
+        placeholderTextColor={"gray"}
         value={password}
         onChangeText={setPassword}
         className="p-3 w-full  rounded-lg  bg-gray-800 text-white text-base

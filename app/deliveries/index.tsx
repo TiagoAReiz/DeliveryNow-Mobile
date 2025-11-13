@@ -1,10 +1,9 @@
 import deliveriesService from "@/services/deliveries/deliveries_service";
 import { DeliveryResponse } from "@/services/deliveries/dtos/DeliveryResponse";
 import { DeliveryStatus } from "@/services/deliveries/enums/status_enum";
+import { FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { FaSearch, FaTruck } from "react-icons/fa";
-import { IoIosArrowForward } from "react-icons/io";
 import { FlatList, Pressable, Text, TextInput, View } from "react-native";
 
 export default function DeliveriesPage() {
@@ -65,12 +64,13 @@ export default function DeliveriesPage() {
         Entregas
       </Text>
       <View className="flex-row  bg-gray-700 rounded-lg h-12 justify-center items-center align-middle px-4">
-        <FaSearch className="text-gray-400" />
+        <FontAwesome name="search" size={20} color="gray" />
         <TextInput
           onChangeText={handleSearchFilter}
           value={filters.search}
           className="outline-none text-white flex-grow p-3 text-base"
           placeholder="Buscar por nome ou endereço"
+          placeholderTextColor="#aaa"
         ></TextInput>
       </View>
       <View className="flex flex-row gap-10 text-center justify-center">
@@ -125,7 +125,7 @@ export default function DeliveriesPage() {
             onPress={() => getProduct(item.id)}
             className="w-full bg-gray-800 p-6 my-2 rounded-lg flex flex-row gap-4 items-center"
           >
-            <FaTruck className="bg-gray-700 h-12 w-12 p-2 text-white rounded-lg" />
+            <FontAwesome name="truck" size={24} color="gray" />
             <View className="flex-col gap-1 flex-grow">
               <Text className="text-white text-base">{item.name}</Text>
               <Text className="text-gray-400">{item.address}</Text>
@@ -145,7 +145,7 @@ export default function DeliveriesPage() {
               </Text>
             </View>
             <View className="flex-shrink">
-              <IoIosArrowForward className="text-gray-400" />
+              <FontAwesome name="arrow-right" size={24} color="gray" />
             </View>
           </Pressable>
         )}

@@ -1,21 +1,23 @@
+import { AuthProvider } from "@/provider/auth-context";
 import { Tabs } from "expo-router";
 import React from "react";
-
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: "white",
-        tabBarInactiveTintColor: "gray",
-        tabBarStyle: {
-          backgroundColor: "#0f172a",
-        },
-        headerShown: false,
-      }}
-    ></Tabs>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#0f172a" }}>
+      <AuthProvider>
+        <Tabs
+          screenOptions={{
+            tabBarActiveTintColor: "white",
+            tabBarInactiveTintColor: "gray",
+            tabBarStyle: {
+              display: "none",
+            },
+            headerShown: false,
+          }}
+        />
+      </AuthProvider>
+    </SafeAreaView>
   );
 }
