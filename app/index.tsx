@@ -1,17 +1,19 @@
 import "@/global.css";
-import LoginService from "@/services/login/login_service";
+import { useAuth } from "@/provider/auth-context";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
 export default function LoginScreen() {
+  const { onLogin } = useAuth();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   async function handleLogin() {
-    await LoginService.login({
-      email,
-      password,
-    });
+    await onLogin?.({ email, password });
+    router.push("/deliveries");
+    console.log("Login realizado com sucesso!");
   }
   return (
     <View className="p-4 flex justify-center bg-gray-900 gap-4 h-full">

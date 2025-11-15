@@ -1,26 +1,44 @@
 import { api } from "@/config/api";
 import { DeliveryResponse } from "./dtos/DeliveryResponse";
+import { DeliveryStatus } from "./enums/status_enum";
 
 class DeliveriesService {
   public async getDeliveries(
     status?: string,
-    search?: string
+    search?: string,
+    userId?: Number
   ): Promise<DeliveryResponse[]> {
-    var response = await api.get<DeliveryResponse[]>("/delivery/search", {
-      params: {
-        status,
-        search,
-      },
-    });
-    return response.data;
+    try {
+      var response = await api.get<DeliveryResponse[]>("/delivery/search", {
+        params: {
+          status,
+          search,
+          userId,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   public async getDeliveryById(id: string): Promise<DeliveryResponse> {
-    var response = await api.get<DeliveryResponse>(`/delivery/${id}`);
-    return response.data;
+    try {
+      var response = await api.get<DeliveryResponse>(`/delivery/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
-  public async updateDeliveryStatus(id: string, status: string): Promise<void> {
-    await api.patch(`/delivery/${id}`, { status });
+  public async updateDeliveryStatus(
+    id: string,
+    status: DeliveryStatus
+  ): Promise<void> {
+    try {
+      await api.patch(`/delivery/${id}`, { status });
+    } catch (error) {
+      throw error;
+    }
   }
 }
 

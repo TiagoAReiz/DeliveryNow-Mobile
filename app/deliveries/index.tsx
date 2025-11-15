@@ -1,12 +1,15 @@
+import { useAuth } from "@/provider/auth-context";
 import deliveriesService from "@/services/deliveries/deliveries_service";
 import { DeliveryResponse } from "@/services/deliveries/dtos/DeliveryResponse";
 import { DeliveryStatus } from "@/services/deliveries/enums/status_enum";
 import { FontAwesome } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Pressable, Text, TextInput, View } from "react-native";
 
 export default function DeliveriesPage() {
+  const { onLogout, authState } = useAuth();
+  const userId = authState?.userId;
   const router = useRouter();
   const [deliveries, setDeliveries] = useState<DeliveryResponse[]>([]);
   const [filters, setFilters] = useState<Filters>({ search: "", status: "" });
@@ -17,8 +20,12 @@ export default function DeliveriesPage() {
     status: DeliveryStatus | "";
   };
 
-  async function getDeliveries(status?: string, search?: string) {
-    const data = await deliveriesService.getDeliveries(status, search);
+  async function getDeliveries(
+    status?: string,
+    search?: string,
+    userId?: Number
+  ) {
+    const data = await deliveriesService.getDeliveries(status, search, userId);
     setDeliveries(data);
   }
 
@@ -33,9 +40,12 @@ export default function DeliveriesPage() {
   }, [filters.search]);
 
   useEffect(() => {
-    getDeliveries(filters.status, debouncedSearch);
-  }, [filters.status, debouncedSearch]);
+    getDeliveries(filters.status, debouncedSearch, userId as Number);
+  }, [filters.status, debouncedSearch, userId]);
 
+  useFocusEffect(() => {
+    getDeliveries(filters.status, debouncedSearch, userId as Number);
+  });
   function getProduct(id: string) {
     router.push(`/deliveries/${id} ` as any);
   }
@@ -60,6 +70,12 @@ export default function DeliveriesPage() {
 
   return (
     <View className="p-4 flex bg-gray-900 h-full gap-6">
+      <Pressable
+        onPress={onLogout}
+        className=" bg-red-500 p-2 rounded absolute top-2 right-4"
+      >
+        <Text className="text-white font-bold">Logout</Text>
+      </Pressable>
       <Text className="text-2xl font-bold text-white text-center">
         Entregas
       </Text>
@@ -131,7 +147,7 @@ export default function DeliveriesPage() {
               <Text className="text-gray-400">{item.address}</Text>
               <Text
                 className={
-                  " rounded-3xl px-2 py-0.5 w-fit " +
+                  " rounded-3xl px-2 py-0.5 w-1/3  " +
                   (item.status === DeliveryStatus.PENDING
                     ? "text-yellow-300 bg-yellow-800  "
                     : item.status === DeliveryStatus.DELIVERED

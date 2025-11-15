@@ -1,16 +1,18 @@
 import deliveriesService from "@/services/deliveries/deliveries_service";
 import { DeliveryResponse } from "@/services/deliveries/dtos/DeliveryResponse";
+import { DeliveryStatus } from "@/services/deliveries/enums/status_enum";
 import { FontAwesome } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Image, Pressable, ScrollView, Text, View } from "react-native";
+import DeliveryPhoto from "./types/photo";
 
 export default function DeliveryPage() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [delivery, setDelivery] = useState<DeliveryResponse>();
-  const [photos, setPhotos] = useState<string[]>([]);
+  const [photos, setPhotos] = useState<DeliveryPhoto[]>([]);
 
   async function getDelivery(id: string) {
     const response = await deliveriesService.getDeliveryById(id);
@@ -33,18 +35,27 @@ export default function DeliveryPage() {
       base64: false,
     });
 
-    if (!result.canceled) {
-      setPhotos((prev) => [...prev, result.assets[0].uri]);
+    if (!result.canceled && delivery) {
+      const newPhoto = {
+        uri: result.assets[0].uri,
+        deliveryId: delivery.id, // <- vínculo direto
+      };
+      setPhotos((prev) => [...prev, newPhoto]);
     }
   }
 
   async function markAsDelivered() {
     if (!delivery) return;
     setDelivery({ ...delivery, status: "DELIVERED" });
-    deliveriesService.updateDeliveryStatus(delivery.id, "DELIVERED");
+    deliveriesService.updateDeliveryStatus(
+      delivery.id,
+      DeliveryStatus.DELIVERED
+    );
     Alert.alert("Sucesso", "Entrega marcada como entregue!");
   }
-
+  async function handleRemoveImage(uri: string) {
+    setPhotos((prev) => prev.filter((photo) => photo.uri !== uri));
+  }
   useEffect(() => {
     const deliveryId = Array.isArray(id) ? id[0] : id;
     if (deliveryId) getDelivery(deliveryId);
@@ -62,7 +73,7 @@ export default function DeliveryPage() {
           className="flex-row items-center mb-6"
         >
           <FontAwesome name="arrow-left" size={24} color="gray" />
-          <Text className="text-white font-semibold text-lg">Voltar</Text>
+          <Text className="text-white font-semibold text-lg"> Voltar</Text>
         </Pressable>
 
         <Text className="text-3xl font-bold text-white mb-6 text-center">
@@ -118,12 +129,19 @@ export default function DeliveryPage() {
           {photos.length === 0 ? (
             <Text className="text-gray-400">Nenhuma foto ainda.</Text>
           ) : (
-            photos.map((uri, idx) => (
-              <Image
-                key={idx}
-                source={{ uri }}
-                className="w-48 h-48 rounded-2xl mr-4 border border-gray-700"
-              />
+            photos.map((photo, idx) => (
+              <View key={idx}>
+                <Image
+                  source={{ uri: photo.uri }}
+                  className="w-48 h-48 rounded-2xl mr-4 border border-gray-700"
+                />
+                <Pressable
+                  onPress={() => handleRemoveImage(photo.uri)}
+                  className="bg-red-500 absolute top-2 right-5 p-2 rounded-full"
+                >
+                  <FontAwesome name="trash" size={12} color="white" />
+                </Pressable>
+              </View>
             ))
           )}
         </ScrollView>

@@ -6,9 +6,14 @@ import * as SecureStore from "expo-secure-store";
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface AuthProps {
-  authState?: { token: string | null; authenticated: boolean | null };
+  authState?: {
+    token: string | null;
+    authenticated: boolean | null;
+    userId: Number | null;
+  };
   onLogin?: (data: LoginRequest) => Promise<any>;
   onLogout?: () => Promise<void>;
+  userId?: Number | null;
 }
 
 const AuthContext = createContext<AuthProps>({});
@@ -21,9 +26,11 @@ export const AuthProvider = ({ children }: any) => {
   const [authState, setAuthState] = useState<{
     token: string | null;
     authenticated: boolean | null;
+    userId: Number | null;
   }>({
     token: null,
     authenticated: false,
+    userId: null,
   });
 
   const login = async (data: LoginRequest) => {
@@ -32,10 +39,11 @@ export const AuthProvider = ({ children }: any) => {
       setAuthState({
         token: response.token,
         authenticated: true,
+        userId: response.id,
       });
       api.defaults.headers.common["Authorization"] = `Bearer ${response.token}`;
       SecureStore.setItemAsync("token", response.token);
-      SecureStore.setItemAsync("user_id", response.id);
+      SecureStore.setItemAsync("user_id", String(response.id));
       router.push("/deliveries");
       return response;
     } catch (e) {
@@ -49,6 +57,7 @@ export const AuthProvider = ({ children }: any) => {
     setAuthState({
       token: null,
       authenticated: false,
+      userId: null,
     });
   };
   useEffect(() => {
@@ -60,6 +69,7 @@ export const AuthProvider = ({ children }: any) => {
         setAuthState({
           token: token,
           authenticated: true,
+          userId: Number(await SecureStore.getItemAsync("user_id")),
         });
         router.replace("/deliveries");
       } else {

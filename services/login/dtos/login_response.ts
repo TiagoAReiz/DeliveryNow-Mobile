@@ -1,4 +1,4 @@
 export interface LoginResponse {
-    token: string;
-    id: string;
+  token: string;
+  id: Number;
 }

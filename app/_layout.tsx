@@ -1,22 +1,12 @@
 import { AuthProvider } from "@/provider/auth-context";
-import { Tabs } from "expo-router";
-import React from "react";
+import { Stack } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function TabLayout() {
+export default function RootLayout() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#0f172a" }}>
       <AuthProvider>
-        <Tabs
-          screenOptions={{
-            tabBarActiveTintColor: "white",
-            tabBarInactiveTintColor: "gray",
-            tabBarStyle: {
-              display: "none",
-            },
-            headerShown: false,
-          }}
-        />
+        <Stack screenOptions={{ headerShown: false }} />
       </AuthProvider>
     </SafeAreaView>
   );

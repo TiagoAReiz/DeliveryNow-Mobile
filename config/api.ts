@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { router } from "expo-router";
-
+import * as SecureStore from "expo-secure-store";
 const API_BASE_URL = "http://192.168.15.11:8080";
 
 export const api = axios.create({
@@ -27,9 +26,8 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
-      await AsyncStorage.removeItem("token");
-      router.replace("/login");
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      await SecureStore.deleteItemAsync("token");
     }
     return Promise.reject(error);
   }
