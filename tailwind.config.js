@@ -2,9 +2,9 @@
 module.exports = {
   // NOTE: Include all files that can contain NativeWind/Tailwind classes.
   content: [
-    "./app/**/*.{js,jsx,ts,tsx}",
-    "./components/**/*.{js,jsx,ts,tsx}",
-    "./app/**/*",
+    "./src/app/**/*.{js,jsx,ts,tsx}",
+    "./src/components/**/*.{js,jsx,ts,tsx}",
+    "./src/app/**/*",
   ],
   presets: [require("nativewind/preset")],
   theme: {
