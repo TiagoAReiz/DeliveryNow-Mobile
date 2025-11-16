@@ -1,8 +1,10 @@
 import axios from "axios";
+import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { useAuth } from "../provider/auth-context";
+
 const API_BASE_URL = "http://192.168.15.11:8080";
-const { onLogout } = useAuth();
+
+const router = useRouter();
 export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -27,7 +29,10 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401 || error.response?.status === 403) {
-      onLogout?.();
+      await SecureStore.deleteItemAsync("token");
+      await SecureStore.deleteItemAsync("user_id");
+      api.defaults.headers.common["Authorization"] = "";
+      router.replace("/");
     }
     return Promise.reject(error);
   }

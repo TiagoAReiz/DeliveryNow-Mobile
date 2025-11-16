@@ -6,8 +6,6 @@ export default function DeliveriesPage() {
     <ProtectedRoute>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: "white",
-          tabBarInactiveTintColor: "gray",
           tabBarStyle: {
             display: "none",
           },
