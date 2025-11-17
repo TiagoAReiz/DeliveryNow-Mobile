@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
 import deliveriesService from '@/src/services/deliveries/deliveries_service';
 import type { Delivery, DeliveryFilters } from '@/src/types/delivery';
 import { DeliveryStatus } from '@/src/types/delivery';
+import { useCallback, useEffect, useState } from 'react';
 
 export function useDeliveries(userId?: number | null) {
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
@@ -21,12 +21,11 @@ export function useDeliveries(userId?: number | null) {
     };
   }, [filters.search]);
 
-  // Fetch deliveries quando filtros mudam
-  useEffect(() => {
-    fetchDeliveries();
-  }, [filters.status, debouncedSearch, userId]);
-
-  async function fetchDeliveries() {
+  // Memoizar fetchDeliveries com useCallback para evitar loop infinito
+  const fetchDeliveries = useCallback(async () => {
+    // Não fazer fetch se userId não existir
+    if (!userId) return;
+    
     try {
       setIsLoading(true);
       setError(null);
@@ -42,7 +41,12 @@ export function useDeliveries(userId?: number | null) {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [filters.status, debouncedSearch, userId]);
+
+  // Fetch deliveries quando filtros mudam
+  useEffect(() => {
+    fetchDeliveries();
+  }, [fetchDeliveries]);
 
   function handleStatusFilter(status: DeliveryStatus | '') {
     setFilters((prev) => ({ ...prev, status }));
@@ -52,9 +56,10 @@ export function useDeliveries(userId?: number | null) {
     setFilters((prev) => ({ ...prev, search }));
   }
 
-  function refreshDeliveries() {
+  // Memoizar refreshDeliveries para evitar loop no useFocusEffect
+  const refreshDeliveries = useCallback(() => {
     fetchDeliveries();
-  }
+  }, [fetchDeliveries]);
 
   return {
     deliveries,

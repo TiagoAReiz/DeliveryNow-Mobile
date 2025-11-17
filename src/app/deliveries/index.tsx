@@ -1,14 +1,14 @@
-import { useAuth } from '@/src/provider/auth-context';
-import { FontAwesome } from '@expo/vector-icons';
-import { useFocusEffect, useRouter } from 'expo-router';
-import { FlatList, Pressable, Text, View } from 'react-native';
 import { GradientBackground } from '@/src/components/ui/atoms/GradientBackground';
-import { SearchBar } from '@/src/components/ui/molecules/SearchBar';
-import { FilterButton } from '@/src/components/ui/molecules/FilterButton';
-import { DeliveryCard } from '@/src/components/ui/organisms/DeliveryCard';
 import { EmptyState } from '@/src/components/ui/molecules/EmptyState';
+import { FilterButton } from '@/src/components/ui/molecules/FilterButton';
+import { SearchBar } from '@/src/components/ui/molecules/SearchBar';
+import { DeliveryCard } from '@/src/components/ui/organisms/DeliveryCard';
 import { useDeliveries } from '@/src/hooks/useDeliveries';
+import { useAuth } from '@/src/provider/auth-context';
 import { DeliveryStatus } from '@/src/types/delivery';
+import { FontAwesome } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { FlatList, Pressable, Text, View } from 'react-native';
 
 export default function DeliveriesPage() {
   const { onLogout, authState } = useAuth();
@@ -20,12 +20,9 @@ export default function DeliveriesPage() {
     filters,
     handleStatusFilter,
     handleSearchFilter,
-    refreshDeliveries,
   } = useDeliveries(userId);
 
-  useFocusEffect(() => {
-    refreshDeliveries();
-  });
+  // Removido useFocusEffect - o useEffect no hook já cuida do fetch
 
   function navigateToDelivery(id: string) {
     router.push(`/deliveries/${id}` as any);

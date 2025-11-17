@@ -2,14 +2,16 @@ import axios from "axios";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 
-const API_BASE_URL = "http://192.168.15.11:8080";
+// Carrega variáveis de ambiente
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || "http://192.168.15.11:8080";
+const API_TIMEOUT = parseInt(process.env.EXPO_PUBLIC_API_TIMEOUT || "15000");
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 15000,
+  timeout: API_TIMEOUT,
 });
 
 api.interceptors.request.use(

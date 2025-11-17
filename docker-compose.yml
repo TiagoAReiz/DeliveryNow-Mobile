@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: deliverynow-mobile
+    volumes:
+      - ./src:/app/src
+      - ./assets:/app/assets
+      - ./app.json:/app/app.json
+      - /app/node_modules
+    ports:
+      - "8081:8081"
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
+    environment:
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+

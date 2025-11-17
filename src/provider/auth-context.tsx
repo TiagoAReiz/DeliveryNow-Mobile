@@ -64,8 +64,12 @@ export const AuthProvider = ({ children }: any) => {
 
   // Load token on mount
   useEffect(() => {
+    let isMounted = true;
+    
     const loadToken = async () => {
       const { token, userId } = await getAuthCredentials();
+
+      if (!isMounted) return;
 
       if (token && userId) {
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -76,11 +80,20 @@ export const AuthProvider = ({ children }: any) => {
         });
         router.replace('/deliveries');
       } else {
-        await logout();
+        // Apenas atualizar estado, não chamar logout completo
+        setAuthState({
+          token: null,
+          authenticated: false,
+          userId: null,
+        });
       }
     };
     
     loadToken();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const value: AuthContextType = {
