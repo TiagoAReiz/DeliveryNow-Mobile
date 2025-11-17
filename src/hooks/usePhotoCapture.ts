@@ -36,13 +36,13 @@ export function usePhotoCapture(deliveryId?: string, isDelivered?: boolean) {
     };
   }, [localPhotos.length, isDelivered, isUploading]);
 
-  // Limpar fotos locais quando o deliveryId muda
+
   useEffect(() => {
     setLocalPhotos([]);
     setUploadedPhotos([]);
   }, [deliveryId]);
 
-  // Fetch das fotos enviadas quando deliveryId muda
+
   useEffect(() => {
     if (deliveryId) {
       fetchPhotos();

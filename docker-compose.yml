@@ -20,4 +20,9 @@ services:
       - .env
     stdin_open: true
     tty: true
+    networks:
+      - deliverynow-network
 
+networks:
+  deliverynow-network:
+    external: true
