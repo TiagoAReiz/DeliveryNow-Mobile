@@ -84,20 +84,20 @@ export default function DeliveriesPage() {
     switch (status) {
       case DeliveryStatus.PENDING:
         return {
-          bg: "rgba(245, 158, 11, 0.2)", // amber-500/20
-          text: "#fbbf24", // amber-400
+          bg: "rgba(245, 158, 11, 0.2)",
+          text: "#fbbf24",
           border: "rgba(245, 158, 11, 0.5)",
         };
       case DeliveryStatus.DELIVERED:
         return {
-          bg: "rgba(16, 185, 129, 0.2)", // emerald-500/20
-          text: "#34d399", // emerald-400
+          bg: "rgba(16, 185, 129, 0.2)",
+          text: "#34d399",
           border: "rgba(16, 185, 129, 0.5)",
         };
       case DeliveryStatus.LATE:
         return {
-          bg: "rgba(239, 68, 68, 0.2)", // red-500/20
-          text: "#f87171", // red-400
+          bg: "rgba(239, 68, 68, 0.2)",
+          text: "#f87171",
           border: "rgba(239, 68, 68, 0.5)",
         };
       default:
@@ -120,9 +120,8 @@ export default function DeliveriesPage() {
   }) => (
     <Pressable onPress={onPress} className="mr-3 active:opacity-80">
       {active ? (
-        /* CORREÇÃO AQUI: Padding e Radius movidos para style */
         <LinearGradient
-          colors={["#3b82f6", "#4f46e5", "#7c3aed"]} // Blue to Purple
+          colors={["#3b82f6", "#4f46e5", "#7c3aed"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={[
@@ -144,7 +143,7 @@ export default function DeliveriesPage() {
     <View className="flex-1 bg-slate-950">
       {/* Background Geral */}
       <LinearGradient
-        colors={["#020617", "#0f172a", "#020617"]} // Slate 950 -> 900 -> 950
+        colors={["#020617", "#0f172a", "#020617"]}
         className="absolute inset-0"
       />
 
@@ -210,24 +209,27 @@ export default function DeliveriesPage() {
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
           const statusStyle = getStatusColor(item.status);
+
+          const formattedAddress =
+            item.address && typeof item.address === "object"
+              ? `${item.address.street}, ${item.address.city}`
+              : "Endereço não informado";
+
           return (
             <Pressable
               onPress={() => getProduct(item.id)}
               className="mb-4 active:scale-[0.98] transition-transform"
             >
-              {/* Card com Borda Gradiente Sutil */}
               <LinearGradient
                 colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.02)"]}
-                style={{ borderRadius: 24, padding: 1 }} // CORREÇÃO AQUI
+                style={{ borderRadius: 24, padding: 1 }}
               >
                 <View className="bg-slate-900/90 rounded-3xl p-5 backdrop-blur-md">
                   <View className="flex-row items-center">
-                    {/* Ícone do Caminhão */}
                     <View className="bg-indigo-500/10 rounded-2xl p-3 mr-4 border border-indigo-500/20">
                       <FontAwesome name="truck" size={20} color="#818cf8" />
                     </View>
 
-                    {/* Infos Centrais */}
                     <View className="flex-1">
                       <Text
                         className="text-white font-bold text-lg mb-1"
@@ -245,12 +247,11 @@ export default function DeliveriesPage() {
                           className="text-slate-400 text-xs ml-1.5 flex-1"
                           numberOfLines={1}
                         >
-                          {item.address}
+                          {formattedAddress}
                         </Text>
                       </View>
                     </View>
 
-                    {/* Seta */}
                     <FontAwesome
                       name="chevron-right"
                       size={14}

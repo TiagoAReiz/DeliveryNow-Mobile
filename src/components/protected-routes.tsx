@@ -9,7 +9,6 @@ interface Props {
 export default function ProtectedRoute({ children }: Props) {
   const { authState } = useAuth();
 
-  // Estado ainda carregando token
   if (authState?.authenticated === null) {
     return (
       <View className="flex-1 items-center justify-center bg-slate-900">
@@ -18,11 +17,11 @@ export default function ProtectedRoute({ children }: Props) {
     );
   }
 
-  // Se não autenticado → redireciona pro login
+  
   if (!authState?.authenticated) {
     return <Redirect href="/" />;
   }
 
-  // Autenticado → renderiza a página normalmente
+
   return <>{children}</>;
 }

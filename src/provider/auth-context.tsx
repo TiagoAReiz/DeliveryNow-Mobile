@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: any) => {
       router.push("/deliveries");
       return response;
     } catch (e) {
-      return { error: true, msg: (e as any).response.msg };
+      throw e;
     }
   };
   const logout = async () => {

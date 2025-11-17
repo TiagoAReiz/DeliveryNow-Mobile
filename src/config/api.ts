@@ -1,10 +1,9 @@
 import axios from "axios";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 
 const API_BASE_URL = "http://192.168.15.11:8080";
 
-const router = useRouter();
 export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -12,6 +11,7 @@ export const api = axios.create({
   },
   timeout: 15000,
 });
+
 api.interceptors.request.use(
   async (config) => {
     const token = await SecureStore.getItemAsync("token");
@@ -28,7 +28,14 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
+    const originalRequest = error.config;
+    const requestUrl = originalRequest?.url ?? "";
+    const isAuthError =
+      error.response?.status === 401 || error.response?.status === 403;
+    const isLoginEndpoint =
+      requestUrl === "/" || requestUrl.includes("/login");
+
+    if (isAuthError && !isLoginEndpoint) {
       await SecureStore.deleteItemAsync("token");
       await SecureStore.deleteItemAsync("user_id");
       api.defaults.headers.common["Authorization"] = "";

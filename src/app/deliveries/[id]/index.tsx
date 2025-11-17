@@ -7,7 +7,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { ComponentProps, useEffect, useState } from "react";
 import {
   Alert,
   Animated,
@@ -19,6 +19,8 @@ import {
   View,
 } from "react-native";
 import DeliveryPhoto from "../../../services/receipts/dtos/photo";
+
+type FontAwesomeIconName = ComponentProps<typeof FontAwesome>["name"];
 
 export default function DeliveryPage() {
   const router = useRouter();
@@ -186,32 +188,37 @@ export default function DeliveryPage() {
     }
   }, [delivery?.id]);
 
-  const getStatusInfo = () => {
+  const getStatusInfo = (): {
+    gradientColors: string[];
+    text: string;
+    icon: FontAwesomeIconName;
+    shadowStyle: any;
+  } => {
     switch (delivery?.status) {
       case "PENDING":
         return {
-          gradientColors: ["#fde047", "#f97316"], // amber-400 to orange-500
+          gradientColors: ["#fde047", "#f97316"],
           text: "Pendente",
           icon: "clock-o",
           shadowStyle: styles.shadowAmber,
         };
       case "DELIVERED":
         return {
-          gradientColors: ["#34d399", "#10b981"], // emerald-400 to green-500
+          gradientColors: ["#34d399", "#10b981"],
           text: "Entregue",
           icon: "check-circle",
           shadowStyle: styles.shadowEmerald,
         };
       case "LATE":
         return {
-          gradientColors: ["#fca5a5", "#ef4444"], // rose-400 to red-500
+          gradientColors: ["#fca5a5", "#ef4444"],
           text: "Atrasado",
           icon: "exclamation-triangle",
           shadowStyle: styles.shadowRose,
         };
       default:
         return {
-          gradientColors: ["#9ca3af", "#6b7280"], // gray-400 to gray-500
+          gradientColors: ["#9ca3af", "#6b7280"],
           text: delivery?.status || "",
           icon: "info-circle",
           shadowStyle: styles.shadowGray,
@@ -225,7 +232,7 @@ export default function DeliveryPage() {
     <View className="flex-1 bg-slate-950">
       {/* 1. Background Geral da Tela (LinearGradient Real) */}
       <LinearGradient
-        colors={["#020617", "#0f172a", "#020617"]} // slate-950 -> slate-900 -> slate-950
+        colors={["#020617", "#0f172a", "#020617"]}
         style={StyleSheet.absoluteFillObject}
       />
 
@@ -233,7 +240,7 @@ export default function DeliveryPage() {
       <View className="pt-14 pb-10 px-6 shadow-2xl">
         {/* 2. Background do Header (LinearGradient Real) */}
         <LinearGradient
-          colors={["#4f46e5", "#9333ea", "#db2777"]} // indigo-600 -> purple-600 -> pink-600
+          colors={["#4f46e5", "#9333ea", "#db2777"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -291,7 +298,10 @@ export default function DeliveryPage() {
         </View>
       </View>
 
-      <ScrollView className="flex-1 pt-12" showsVerticalScrollIndicator={false}>
+      <ScrollView
+        className="flex-1 pt-12 py-4"
+        showsVerticalScrollIndicator={false}
+      >
         {/* Card de Informações Flutuante */}
         <View className="mx-6 -mt-8 bg-slate-900/95 backdrop-blur-xl rounded-[32px] shadow-2xl border border-slate-700/50 overflow-hidden">
           {/* Background sutil do card */}
@@ -300,7 +310,7 @@ export default function DeliveryPage() {
             style={StyleSheet.absoluteFillObject}
           />
 
-          <View className="p-8 space-y-5">
+          <View className="p-8 space-y-6">
             {/* Destinatário */}
             <View className="flex-row items-start">
               {/* 3. Ícone com Gradiente Real */}
@@ -322,7 +332,7 @@ export default function DeliveryPage() {
               </View>
             </View>
 
-            <View className="h-px bg-slate-800/50 my-3" />
+            <View className="h-px bg-slate-800/50 my-2" />
 
             {/* Endereço */}
             <View className="flex-row items-start">
@@ -338,13 +348,30 @@ export default function DeliveryPage() {
                 <Text className="text-purple-400 text-xs font-black mb-2 tracking-widest uppercase">
                   Endereço de Entrega
                 </Text>
-                <Text className="text-white font-semibold text-base leading-relaxed">
-                  {delivery?.address || "Carregando..."}
-                </Text>
+
+                {/* AJUSTADO: Bloco de Endereço Formatado */}
+                {delivery?.address && typeof delivery.address === "object" ? (
+                  <>
+                    <Text className="text-white font-semibold text-base leading-relaxed">
+                      {delivery.address.street}
+                    </Text>
+                    <Text className="text-slate-300 font-normal text-sm leading-relaxed">
+                      {delivery.address.city}, {delivery.address.state}
+                    </Text>
+                    <Text className="text-slate-300 font-normal text-sm leading-relaxed">
+                      {delivery.address.postalCode} ({delivery.address.country})
+                    </Text>
+                  </>
+                ) : (
+                  <Text className="text-white font-semibold text-base leading-relaxed">
+                    {delivery ? "Endereço não informado" : "Carregando..."}
+                  </Text>
+                )}
               </View>
             </View>
           </View>
         </View>
+
         {/* Seção: Fotos Enviadas */}
         <View className="mt-12 px-6">
           <View className="flex-row items-center justify-between mb-6">
@@ -412,7 +439,6 @@ export default function DeliveryPage() {
             )}
           </ScrollView>
         </View>
-
         {/* Botão Premium de Captura */}
         <Pressable
           onPress={takePhoto}
@@ -459,7 +485,7 @@ export default function DeliveryPage() {
             <View className="flex-row items-center flex-1">
               <View className="mr-4 rounded-2xl overflow-hidden shadow-lg shadow-amber-500/50">
                 <LinearGradient
-                  colors={["#f59e0b", "#ea580c"]} // amber-500 -> orange-600
+                  colors={["#f59e0b", "#ea580c"]}
                   style={{ padding: 12 }}
                 >
                   <FontAwesome name="hourglass-half" size={22} color="white" />
@@ -484,7 +510,7 @@ export default function DeliveryPage() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            className="mb-6  py-4"
+            className="mb-6"
           >
             {localPhotos.length === 0 ? (
               <View className="bg-slate-900/50 rounded-3xl p-12 border-2 border-dashed border-slate-700/50 items-center justify-center w-80 mr-4">
@@ -509,7 +535,7 @@ export default function DeliveryPage() {
                     className="absolute -top-3 -right-3 rounded-full border-4 border-slate-900 overflow-hidden shadow-2xl active:scale-90"
                   >
                     <LinearGradient
-                      colors={["#f43f5e", "#dc2626"]} // rose-500 -> red-600
+                      colors={["#f43f5e", "#dc2626"]}
                       style={{ padding: 16 }}
                     >
                       <FontAwesome name="trash" size={16} color="white" />
@@ -525,7 +551,7 @@ export default function DeliveryPage() {
         <View className="px-6 pb-10 mt-6 space-y-5">
           {/* Botão Upload */}
           {isSendButtonDisabled ? (
-            <View className="rounded-3xl border-2 bg-slate-800 border-slate-700 opacity-60 mb-5">
+            <View className="rounded-3xl border-2 bg-slate-800 border-slate-700 opacity-60">
               <View className="p-6 flex-row items-center justify-center">
                 <FontAwesome name="cloud-upload" size={24} color="white" />
                 <Text className="text-white font-black text-lg ml-4">
@@ -535,10 +561,7 @@ export default function DeliveryPage() {
             </View>
           ) : (
             <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
-              <Pressable
-                onPress={uploadPhotos}
-                className="active:scale-95 mb-5"
-              >
+              <Pressable onPress={uploadPhotos} className="active:scale-95">
                 <View
                   style={styles.shadowIndigo}
                   className="rounded-3xl overflow-hidden"
@@ -575,7 +598,7 @@ export default function DeliveryPage() {
           {/* Botão Confirmar Entrega */}
           {delivery?.status === "DELIVERED" || !canMarkAsDelivered ? (
             <View
-              className={`rounded-3xl border-2 bg-slate-800 border-slate-700 ${
+              className={`rounded-3xl border-2 bg-slate-800 border-slate-700 my-5 ${
                 delivery?.status === "DELIVERED" ? "opacity-100" : "opacity-60"
               }`}
             >
@@ -598,7 +621,10 @@ export default function DeliveryPage() {
             </View>
           ) : (
             <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
-              <Pressable onPress={markAsDelivered} className="active:scale-95">
+              <Pressable
+                onPress={markAsDelivered}
+                className="active:scale-95 my-5"
+              >
                 <View
                   style={styles.shadowEmerald}
                   className="rounded-3xl overflow-hidden"
