@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Animated, Alert } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 import receipt_service from '@/src/services/receipts/receipt_service';
 import type { Photo, ReceiptPhoto } from '@/src/types/photo';
+import * as ImagePicker from 'expo-image-picker';
+import { useCallback, useEffect, useState } from 'react';
+import { Alert, Animated } from 'react-native';
 
 export function usePhotoCapture(deliveryId?: string, isDelivered?: boolean) {
   const [localPhotos, setLocalPhotos] = useState<Photo[]>([]);
@@ -36,7 +36,13 @@ export function usePhotoCapture(deliveryId?: string, isDelivered?: boolean) {
     };
   }, [localPhotos.length, isDelivered, isUploading]);
 
-  // Fetch uploaded photos
+  // Limpar fotos locais quando o deliveryId muda
+  useEffect(() => {
+    setLocalPhotos([]);
+    setUploadedPhotos([]);
+  }, [deliveryId]);
+
+  // Fetch das fotos enviadas quando deliveryId muda
   useEffect(() => {
     if (deliveryId) {
       fetchPhotos();
@@ -116,6 +122,12 @@ export function usePhotoCapture(deliveryId?: string, isDelivered?: boolean) {
   const canUpload = localPhotos.length > 0 && !isUploading && !isDelivered;
   const hasUploadedPhotos = uploadedPhotos.length > 0;
 
+  // Função para limpar fotos locais (será chamada pela página)
+  // Memoizada para evitar loop infinito no useFocusEffect
+  const clearLocalPhotos = useCallback(() => {
+    setLocalPhotos([]);
+  }, []);
+
   return {
     localPhotos,
     uploadedPhotos,
@@ -127,6 +139,7 @@ export function usePhotoCapture(deliveryId?: string, isDelivered?: boolean) {
     removePhoto,
     uploadPhotos,
     refreshPhotos: fetchPhotos,
+    clearLocalPhotos, // Expor função de limpeza
   };
 }
 

@@ -7,7 +7,8 @@ import { useDeliveryDetails } from '@/src/hooks/useDeliveryDetails';
 import { usePhotoCapture } from '@/src/hooks/usePhotoCapture';
 import type { Address } from '@/src/types/delivery';
 import { DeliveryStatus } from '@/src/types/delivery';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback } from 'react';
 import { Animated, Pressable, ScrollView, Text, View } from 'react-native';
 
 export default function DeliveryPage() {
@@ -26,9 +27,19 @@ export default function DeliveryPage() {
     takePhoto,
     removePhoto,
     uploadPhotos,
+    clearLocalPhotos,
   } = usePhotoCapture(
     Array.isArray(id) ? id[0] : id,
     delivery?.status === DeliveryStatus.DELIVERED
+  );
+
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        clearLocalPhotos();
+      };
+    }, [clearLocalPhotos])
   );
 
   const isDelivered = delivery?.status === DeliveryStatus.DELIVERED;
