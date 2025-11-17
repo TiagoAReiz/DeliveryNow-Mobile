@@ -6,7 +6,7 @@ class DeliveriesService {
   public async getDeliveries(
     status?: string,
     search?: string,
-    userId?: Number
+    userId?: number
   ): Promise<DeliveryResponse[]> {
     try {
       var response = await api.get<DeliveryResponse[]>("/delivery/search", {

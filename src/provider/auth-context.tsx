@@ -1,85 +1,89 @@
-import { api } from "@/src/config/api";
-import { LoginRequest } from "@/src/services/login/dtos/login_request";
-import LoginService from "@/src/services/login/login_service";
-import { router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
-import { createContext, useContext, useEffect, useState } from "react";
+import { api } from '@/src/config/api';
+import LoginService from '@/src/services/login/login_service';
+import type { AuthContextType, AuthState, LoginCredentials } from '@/src/types/auth';
+import {
+  clearAuthCredentials,
+  getAuthCredentials,
+  saveAuthCredentials,
+} from '@/src/utils/storage';
+import { router } from 'expo-router';
+import { createContext, useContext, useEffect, useState } from 'react';
 
-interface AuthProps {
-  authState?: {
-    token: string | null;
-    authenticated: boolean | null;
-    userId: Number | null;
-  };
-  onLogin?: (data: LoginRequest) => Promise<any>;
-  onLogout?: () => Promise<void>;
-  userId?: Number | null;
-}
-
-const AuthContext = createContext<AuthProps>({});
+const AuthContext = createContext<AuthContextType>({});
 
 export const useAuth = () => {
   return useContext(AuthContext);
 };
 
 export const AuthProvider = ({ children }: any) => {
-  const [authState, setAuthState] = useState<{
-    token: string | null;
-    authenticated: boolean | null;
-    userId: Number | null;
-  }>({
+  const [authState, setAuthState] = useState<AuthState>({
     token: null,
-    authenticated: false,
+    authenticated: null,
     userId: null,
   });
 
-  const login = async (data: LoginRequest) => {
+  const login = async (data: LoginCredentials) => {
     try {
-      var response = await LoginService.login(data);
+      const response = await LoginService.login(data);
+      
       setAuthState({
         token: response.token,
         authenticated: true,
         userId: response.id,
       });
-      api.defaults.headers.common["Authorization"] = `Bearer ${response.token}`;
-      SecureStore.setItemAsync("token", response.token);
-      SecureStore.setItemAsync("user_id", String(response.id));
-      router.push("/deliveries");
+
+      // Configure API header
+      api.defaults.headers.common['Authorization'] = `Bearer ${response.token}`;
+      
+      // Save to secure storage
+      await saveAuthCredentials(response.token, response.id);
+      
+      // Navigate to deliveries
+      router.push('/deliveries');
+      
       return response;
     } catch (e) {
       throw e;
     }
   };
+
   const logout = async () => {
-    SecureStore.deleteItemAsync("token");
-    SecureStore.deleteItemAsync("user_id");
-    api.defaults.headers.common["Authorization"] = "";
+    // Clear secure storage
+    await clearAuthCredentials();
+    
+    // Clear API header
+    api.defaults.headers.common['Authorization'] = '';
+    
+    // Reset auth state
     setAuthState({
       token: null,
       authenticated: false,
       userId: null,
     });
   };
+
+  // Load token on mount
   useEffect(() => {
     const loadToken = async () => {
-      const token = await SecureStore.getItemAsync("token");
+      const { token, userId } = await getAuthCredentials();
 
-      if (token) {
-        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      if (token && userId) {
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         setAuthState({
-          token: token,
+          token,
           authenticated: true,
-          userId: Number(await SecureStore.getItemAsync("user_id")),
+          userId,
         });
-        router.replace("/deliveries");
+        router.replace('/deliveries');
       } else {
-        logout();
+        await logout();
       }
     };
+    
     loadToken();
   }, []);
 
-  const value = {
+  const value: AuthContextType = {
     authState,
     onLogin: login,
     onLogout: logout,
