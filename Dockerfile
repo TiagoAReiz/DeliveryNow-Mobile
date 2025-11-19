@@ -12,8 +12,9 @@ COPY package*.json ./
 # Instalar dependências
 RUN npm ci
 
-# Instalar Expo CLI
-RUN npm install -g expo-cli
+# Instalar Expo CLI e ngrok para tunnel
+RUN npm install -g @expo/ngrok
+RUN npm install expo
 
 # Copiar código
 COPY . .
@@ -21,5 +22,5 @@ COPY . .
 # Expor portas
 EXPOSE 8081 19000 19001 19002
 
-CMD ["npm", "start", "--", "--host", "lan"]
+CMD ["npx", "expo", "start", "--tunnel"]
 
