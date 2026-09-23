@@ -1,7 +1,5 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { ScrollView, Text, View } from 'react-native';
 import { PhotoCard } from '../molecules/PhotoCard';
-import { EmptyState } from '../molecules/EmptyState';
 import { Avatar } from '../atoms/Avatar';
 import { GradientConfigs } from '@/src/constants/gradients';
 import type { Photo, ReceiptPhoto } from '@/src/types/photo';

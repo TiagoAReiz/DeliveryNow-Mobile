@@ -1,3 +1,5 @@
+import type { GradientColors } from "@/src/constants/gradients";
+
 /**
  * Tipos relacionados a deliveries/entregas
  */
@@ -37,7 +39,7 @@ export interface StatusColorScheme {
 }
 
 export interface StatusInfo {
-  gradientColors: string[];
+  gradientColors: GradientColors;
   text: string;
   icon: string;
   shadowStyle: any;

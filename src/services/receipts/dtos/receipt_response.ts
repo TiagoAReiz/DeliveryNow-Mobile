@@ -1,4 +1,4 @@
 export interface ReceiptResponse {
-  receiptId: Number;
+  receiptId: number;
   imageUrl: string;
 }

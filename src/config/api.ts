@@ -2,9 +2,11 @@ import axios from "axios";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 
-// Configuração para comunicação com o backend Java via Docker network
-const API_BASE_URL = "http://192.168.15.11:8080";
-const API_TIMEOUT = 15000;
+// URL da DeliveryNow API. Definida em `.env` (veja `.env.example`).
+// Em um celular físico use o IP da sua máquina na rede local, não "localhost".
+const API_BASE_URL =
+  process.env.EXPO_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+const API_TIMEOUT = Number(process.env.EXPO_PUBLIC_API_TIMEOUT ?? 15000);
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
