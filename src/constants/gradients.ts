@@ -1,9 +1,13 @@
 /**
  * Configurações de gradientes com tipos para LinearGradient
  */
+import type { ColorValue } from 'react-native';
+
+/** O LinearGradient exige pelo menos duas cores (tupla não vazia). */
+export type GradientColors = readonly [ColorValue, ColorValue, ...ColorValue[]];
 
 export interface GradientConfig {
-  colors: string[];
+  colors: GradientColors;
   start?: { x: number; y: number };
   end?: { x: number; y: number };
 }

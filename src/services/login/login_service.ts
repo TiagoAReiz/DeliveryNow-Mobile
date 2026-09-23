@@ -5,7 +5,7 @@ import { LoginResponse } from "./dtos/login_response";
 class LoginService {
   public async login(data: LoginRequest): Promise<LoginResponse> {
     try {
-      var response = await api.post<LoginResponse>("/login", data);
+      const response = await api.post<LoginResponse>("/login", data);
       return response.data;
     } catch (error) {
       throw error;

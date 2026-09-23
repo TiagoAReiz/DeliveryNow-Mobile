@@ -9,7 +9,7 @@ class DeliveriesService {
     userId?: number
   ): Promise<DeliveryResponse[]> {
     try {
-      var response = await api.get<DeliveryResponse[]>("/delivery/search", {
+      const response = await api.get<DeliveryResponse[]>("/delivery/search", {
         params: {
           status,
           search,
@@ -24,7 +24,7 @@ class DeliveriesService {
 
   public async getDeliveryById(id: string): Promise<DeliveryResponse> {
     try {
-      var response = await api.get<DeliveryResponse>(`/delivery/${id}`);
+      const response = await api.get<DeliveryResponse>(`/delivery/${id}`);
       return response.data;
     } catch (error) {
       throw error;

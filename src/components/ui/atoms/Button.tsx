@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { Animated, Pressable, PressableProps, StyleSheet, Text, View } from 'react-native';
+import { Pressable, PressableProps, Text } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import type { ComponentProps } from 'react';
 import { Shadows } from '@/src/constants/shadows';

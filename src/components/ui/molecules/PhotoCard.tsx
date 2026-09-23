@@ -2,6 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome } from '@expo/vector-icons';
 import type { ComponentProps } from 'react';
 import { Image, Pressable, View, ViewStyle } from 'react-native';
+import type { GradientColors } from '@/src/constants/gradients';
 
 type FontAwesomeIconName = ComponentProps<typeof FontAwesome>['name'];
 
@@ -9,7 +10,7 @@ interface PhotoCardProps {
   uri: string;
   onActionPress?: () => void;
   actionIcon?: FontAwesomeIconName;
-  actionGradient?: string[];
+  actionGradient?: GradientColors;
   status?: 'pending' | 'uploaded';
   size?: 'small' | 'medium' | 'large';
   style?: ViewStyle;
@@ -39,7 +40,7 @@ export function PhotoCard({
     ? 'border-emerald-500/50' 
     : 'border-amber-500/50';
 
-  const statusIconGradient = status === 'uploaded'
+  const statusIconGradient: GradientColors = status === 'uploaded'
     ? ['#34d399', '#22c55e']
     : actionGradient;
 
